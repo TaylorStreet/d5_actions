@@ -1,0 +1,29 @@
+name: Build Nordic Project
+on: push
+
+jobs:
+
+  build-nordic:
+    name: Build
+    runs-on: ubuntu-latest
+    
+    steps:     
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Install Toolchain
+        uses: fiam/arm-none-eabi-gcc@v1
+        with:
+          release: '7-2018-q2'
+          
+      - name: Build Program
+        run: |
+          cd ./pca10040/s132/armgcc
+          make clean
+          make all
+      
+      - name: Save HEX File
+        uses: actions/upload-artifact@v2.2.2
+        with:
+          name: nrf52832-hex
+          path: ./pca10040/s132/armgcc/_build/nrf52832_xxaa.hex
